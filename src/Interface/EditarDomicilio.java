@@ -18,6 +18,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.table.DefaultTableModel;
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
@@ -76,6 +78,10 @@ public class EditarDomicilio extends javax.swing.JFrame {
         btnEliminar = new javax.swing.JButton();
         btnHabitantes = new javax.swing.JButton();
         btnguardar = new javax.swing.JButton();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -91,8 +97,13 @@ public class EditarDomicilio extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTable1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Editar Registro", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 18))); // NOI18N
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Registrar domicilio", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 18))); // NOI18N
 
         cbLocalidad.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -205,7 +216,7 @@ public class EditarDomicilio extends javax.swing.JFrame {
         );
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        jLabel1.setText("Editar");
+        jLabel1.setText("Nuevo Registro");
 
         tblEditar.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -258,53 +269,81 @@ public class EditarDomicilio extends javax.swing.JFrame {
             }
         });
 
+        jLabel9.setText("Guardar");
+
+        jLabel10.setText("Actualizar");
+
+        jLabel11.setText("Actualizar habitantes");
+
+        jLabel12.setText("Eliminar Registro");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(343, 343, 343)
-                        .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane2)))
-                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(290, 290, 290))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(31, 31, 31)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnHabitantes, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnguardar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(27, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane2)
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(63, 63, 63)
+                                .addComponent(jLabel9)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel10)
+                                .addGap(51, 51, 51))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(31, 31, 31)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(btnHabitantes, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btnguardar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addComponent(jLabel11))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(10, 10, 10)
+                                        .addComponent(jLabel12))
+                                    .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addContainerGap(18, Short.MAX_VALUE))))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(9, 9, 9)
                 .addComponent(jLabel1)
-                .addGap(16, 16, 16)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(51, 51, 51)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnActualizar, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE)
+                            .addComponent(btnguardar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(10, 10, 10)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel9)
+                            .addComponent(jLabel10))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnguardar, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(30, 30, 30)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnHabitantes)
-                            .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnHabitantes))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel11)
+                            .addComponent(jLabel12))))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(94, Short.MAX_VALUE))
         );
 
         pack();
@@ -353,72 +392,58 @@ public class EditarDomicilio extends javax.swing.JFrame {
             }
             
             
-           
-            
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, e.toString());
         }
     }//GEN-LAST:event_tblEditarMouseClicked
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
-        Municipio municipio = new Municipio();
-        tipoVivienda vivienda = new tipoVivienda();
-        Domicilio domicilio = new Domicilio();
-        Localidad localidad = new Localidad();
-        
-        domicilio.setCalleNumero(txtCalle.getText());
-        domicilio.setColonia(txtColonia.getText());
-        domicilio.setCodigoPostal(Integer.parseInt(txtCodigoPostal.getText()));
-        municipio.setMunicipio(cbMunicipio.getSelectedItem().toString());
-        domicilio.setMunicipio(municipio);
-        domicilio.setEstado(txtEstado.getText());
-        vivienda.setVivienda(cbTipoVivienda.getSelectedItem().toString());
-        domicilio.setVivienda(vivienda);
-        localidad.setLocalidad(cbLocalidad.getSelectedItem().toString());
-        domicilio.setLocalidad(localidad);
-        domicilio.ActualizarDomicilio(idDom);
+        if (idDom == 0){
+            JOptionPane.showMessageDialog(null, "Por favor selecione un domicilio");
+        }else {
+            Municipio municipio = new Municipio();
+            tipoVivienda vivienda = new tipoVivienda();
+            Domicilio domicilio = new Domicilio();
+            Localidad localidad = new Localidad();
 
-        limpiar();
-        cargarTabla();
+            domicilio.setCalleNumero(txtCalle.getText());
+            domicilio.setColonia(txtColonia.getText());
+            domicilio.setCodigoPostal(Integer.parseInt(txtCodigoPostal.getText()));
+            municipio.setMunicipio(cbMunicipio.getSelectedItem().toString());
+            domicilio.setMunicipio(municipio);
+            domicilio.setEstado(txtEstado.getText());
+            vivienda.setVivienda(cbTipoVivienda.getSelectedItem().toString());
+            domicilio.setVivienda(vivienda);
+            localidad.setLocalidad(cbLocalidad.getSelectedItem().toString());
+            domicilio.setLocalidad(localidad);
+            domicilio.setIdDomicilio(idDom);
+            domicilio.ActualizarDomicilio();
+
+            limpiar();
+            cargarTabla();
+        }
     }//GEN-LAST:event_btnActualizarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        int opcion = JOptionPane.showConfirmDialog(null, "Esta apunto de elimnar todos los registros del domicilio: "+ idDom + "¿Desea Continuar'");
-        System.out.println(idDom);
-        switch (opcion) {
-            case JOptionPane.YES_OPTION:
-                try {
-                    PreparedStatement ps;
-                    ps = con.prepareStatement("delete from dbo.Habitante where idVivienda = ?");
-                    ps.setInt(1, idDom);
-                    ps.executeUpdate();
-                    ps = con.prepareStatement("delete from dbo.Ocupaciones where idDomicilio = ?");
-                    ps.setInt(1, idDom);
-                    ps.executeUpdate();
-                    ps = con.prepareStatement("delete from dbo.direccion where idVivienda = ?");
-                    ps.setInt(1, idDom);
-                    ps.executeUpdate();
-                    JOptionPane.showMessageDialog(null, "Domicilio eliminado");
-                    limpiar();
-                    cargarTabla();
-                    
-                } catch (SQLException e) {
-                    JOptionPane.showMessageDialog(null, e.toString());
-                }       break;
-            case JOptionPane.NO_OPTION:
-                JOptionPane.showMessageDialog(null, "No se ha eliminado ningun registro");
-                break;
-            default:
-                JOptionPane.showMessageDialog(null, "No se ha eliminado ningun registro");
-                break;
-        }
-        
+
+        Domicilio domicilio = new Domicilio();
+        domicilio.setIdDomicilio(idDom);
+        domicilio.eliminarDomicilio();
+        limpiar();
+        cargarTabla();
+        idDom = 0;
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnHabitantesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHabitantesActionPerformed
+           
+        if (idDom == 0){
+            JOptionPane.showMessageDialog(null, "Por favor selecione un domicilio");
+        }else{
            RegistroHabitante rh = new RegistroHabitante(idDom);
            System.out.println(idDom);
            rh.setVisible(true);
+        }
+        
     }//GEN-LAST:event_btnHabitantesActionPerformed
 
     private void btnguardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnguardarActionPerformed
@@ -446,6 +471,15 @@ public class EditarDomicilio extends javax.swing.JFrame {
        RegistroHabitante rh = new RegistroHabitante(met.getIdDomicilio());
        rh.setVisible(true);
     }//GEN-LAST:event_btnguardarActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        try {
+            conectar.cerrarConexion();
+            JOptionPane.showMessageDialog(null, "Adios!!!");
+        } catch (SQLException ex) {
+            Logger.getLogger(EditarDomicilio.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments
@@ -611,6 +645,9 @@ public class EditarDomicilio extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cbMunicipio;
     public javax.swing.JComboBox<String> cbTipoVivienda;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -618,6 +655,7 @@ public class EditarDomicilio extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;

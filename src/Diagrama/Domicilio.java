@@ -4,10 +4,7 @@ package Diagrama;
 
 
 import ConexionSingleton.Conexion;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import javax.swing.JOptionPane;
 
 public class Domicilio {
@@ -19,11 +16,12 @@ public class Domicilio {
     String Estado;
     public Localidad localidad;
     public tipoVivienda vivienda;
+    int idDomicilio;
 
     public Domicilio() {
     }
 
-    public Domicilio(String calleNumero, String colonia, int codigoPostal, Municipio municipio, String Estado, Localidad localidad, tipoVivienda vivienda) {
+    public Domicilio(String calleNumero, String colonia, int codigoPostal, Municipio municipio, String Estado, Localidad localidad, tipoVivienda vivienda, int idDomicilio) {
         this.calleNumero = calleNumero;
         this.colonia = colonia;
         this.codigoPostal = codigoPostal;
@@ -31,7 +29,9 @@ public class Domicilio {
         this.Estado = Estado;
         this.localidad = localidad;
         this.vivienda = vivienda;
+        this.idDomicilio = idDomicilio;
     }
+
 
 
     
@@ -63,6 +63,14 @@ public class Domicilio {
         this.vivienda = vivienda;
     }
 
+    public void setIdDomicilio(int idDomicilio) {
+        this.idDomicilio = idDomicilio;
+    }
+
+    public int getIdDomicilio() {
+        return idDomicilio;
+    } 
+    
     public Localidad getLocalidad() {
         return localidad;
     }
@@ -103,10 +111,13 @@ public class Domicilio {
     Connection con = conectar.conectar();
     
     public void registrarDomicilio(){
+        
+        String sqlString = "insert into dbo.direccion (calleYNumero, codigoPostal, colonia , municipio, estado," + 
+                "idTipoVivienda, idLocalidad) values (?,?,?,?,?,?,?)";
     
         try{
         PreparedStatement ps;
-        ps = con.prepareStatement("insert into dbo.direccion (calleYNumero, codigoPostal, colonia , municipio, estado, idTipoVivienda, idLocalidad) values (?,?,?,?,?,?,?)");
+        ps = con.prepareStatement(sqlString);
         ps.setString(1, calleNumero);
         ps.setInt(2, codigoPostal);
         ps.setString(3, colonia);
@@ -115,6 +126,7 @@ public class Domicilio {
         ps.setInt(6, vivienda.getIdVivienda());
         ps.setInt(7, localidad.getIdLocalidad());
         ps.executeUpdate();
+        conectar.cerrarConexion();
         
         JOptionPane.showMessageDialog(null, "Domicilio Guardado");
           
@@ -127,26 +139,72 @@ public class Domicilio {
     
     }
     
-    public void ActualizarDomicilio (int idDom){
-        try {
-        PreparedStatement ps;
-        ps = con.prepareStatement("update dbo.direccion set calleYNumero = ?, codigoPostal = ?, colonia = ?, municipio = ?, idLocalidad = ?, estado = ?, idTipoVivienda = ? where idVivienda = ?");
-        ps.setString(1, calleNumero);
-        ps.setInt(2, codigoPostal);
-        ps.setString(3, colonia);
-        ps.setInt(4, municipio.getIdMunicipio());
-        ps.setInt(5, localidad.getIdLocalidad());
-        ps.setString(6, Estado);
-        ps.setInt(7, vivienda.getIdVivienda());
-        ps.setInt(8, idDom);
-        ps.executeUpdate();
+    public void ActualizarDomicilio (){
         
-        JOptionPane.showMessageDialog(null, "Domicilio Modificado");
+        try {
+            String sqlString = "update dbo.direccion set calleYNumero = ?, codigoPostal = ?, colonia = ?," + 
+                    " municipio = ?, idLocalidad = ?, estado = ?, idTipoVivienda = ? where idVivienda = ?";
+            
+            PreparedStatement ps;
+            ps = con.prepareStatement(sqlString);
+            ps.setString(1, calleNumero);
+            ps.setInt(2, codigoPostal);
+            ps.setString(3, colonia);
+            ps.setInt(4, municipio.getIdMunicipio());
+            ps.setInt(5, localidad.getIdLocalidad());
+            ps.setString(6, Estado);
+            ps.setInt(7, vivienda.getIdVivienda());
+            ps.setInt(8, idDomicilio);
+            ps.executeUpdate();
+            conectar.cerrarConexion();
+
+            JOptionPane.showMessageDialog(null, "Domicilio Modificado");
 
         } catch (SQLException e) {
             
             JOptionPane.showMessageDialog(null, e.toString());
         }
+    
+    
+    }
+    
+    
+    public void eliminarDomicilio(){
+        if (idDomicilio == 0){
+            JOptionPane.showMessageDialog(null, "Por favor seleciones un domicilio");
+        }else {
+        
+            int opcion = JOptionPane.showConfirmDialog(null, "Esta apunto de elimnar todos los registros del domicilio: "+ idDomicilio + "¿Desea Continuar'");
+            System.out.println(idDomicilio);
+            switch (opcion) {
+                case JOptionPane.YES_OPTION:
+                    try {
+                        PreparedStatement ps;
+                        ps = con.prepareStatement("delete from dbo.Habitante where idVivienda = ?");
+                        ps.setInt(1, idDomicilio);
+                        ps.executeUpdate();
+                        ps = con.prepareStatement("delete from dbo.Ocupaciones where idDomicilio = ?");
+                        ps.setInt(1, idDomicilio);
+                        ps.executeUpdate();
+                        ps = con.prepareStatement("delete from dbo.direccion where idVivienda = ?");
+                        ps.setInt(1, idDomicilio);
+                        ps.executeUpdate();
+                        conectar.cerrarConexion();
+                        JOptionPane.showMessageDialog(null, "Domicilio eliminado");
+
+                    } catch (SQLException e) {
+                        JOptionPane.showMessageDialog(null, e.toString());
+                    }       break;
+                case JOptionPane.NO_OPTION:
+                    JOptionPane.showMessageDialog(null, "No se ha eliminado ningun registro");
+                    break;
+                default:
+                    JOptionPane.showMessageDialog(null, "No se ha eliminado ningun registro");
+                    break;
+            }
+        
+        }
+        
     
     
     }

@@ -307,8 +307,15 @@ public class RegistroHabitante extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnRegistrarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnRegistrarMouseClicked
-        Persona persona = new Persona(txtNombre.getText(),txtPaterno.getText(),txtMaterno.getText(),txtTelefono.getText(),txtFecha.getText());
-        persona.registrarHabitante();
+        String nombre = txtNombre.getText();
+        String paterno = txtPaterno.getText();
+        String materno = txtMaterno.getText();
+        String telefono = txtTelefono.getText();
+        String fecha = txtFecha.getText();        
+        
+        
+        Persona persona = new Persona(nombre,paterno,materno,telefono,fecha,IdHabitante);
+        persona.registrarHabitante(idomicilio);
         JOptionPane.showMessageDialog(null, "Habitante registrado");
         lblHabitantesRegistrados.setText(met.getNumHabitantes(idomicilio)+"");
         limpiar();
@@ -398,39 +405,32 @@ public class RegistroHabitante extends javax.swing.JFrame {
         String materno = txtMaterno.getText();
         String telefono = txtTelefono.getText();
         String fecha = txtFecha.getText();
-       
-        try {
-            PreparedStatement ps = con.prepareStatement("update dbo.Habitante set nombre = ?, apePaterno = ?, apeMaterno = ?, telefono = ?, fechaNacimiento = ? where idHabitante = ?");
-            ps.setString(1, nombre);
-            ps.setString(2, paterno);
-            ps.setString(3, materno);
-            ps.setString(4, telefono);
-            ps.setString(5, fecha);
-            ps.setInt(6, IdHabitante);
-            ps.executeUpdate();
-            JOptionPane.showMessageDialog(null, "Habitante modificado");
+        
+        if (IdHabitante != 0){
+            Persona persona = new Persona(nombre,paterno,materno,telefono,fecha,IdHabitante);
+            persona.actualizarHabitante();
             limpiar();
             cargarTabla();
             lblHabitantesRegistrados.setText(met.getNumHabitantes(idomicilio)+"");
-            
-        } catch (SQLException ex) {
-            
-            JOptionPane.showMessageDialog(null, ex.toString());
+            IdHabitante = 0;
+        }else{
+            JOptionPane.showMessageDialog(null, "Por favor selecione un habitante.");
         }
+               
     }//GEN-LAST:event_btnActualizarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        try {
-            PreparedStatement ps = con.prepareStatement("delete from  dbo.Habitante where idHabitante = ?");
-            ps.setInt(1, IdHabitante);
-            ps.executeUpdate();
-            JOptionPane.showMessageDialog(null, "Habitante eliminado");
+       
+        if (IdHabitante != 0){
+            Persona persona = new Persona();
+            persona.setIdHabiante(IdHabitante);
+            persona.eliminarHabitante();
             limpiar();
             cargarTabla();
             lblHabitantesRegistrados.setText(met.getNumHabitantes(idomicilio)+"");
-            
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, e.toString());
+            IdHabitante = 0;
+        }else{
+            JOptionPane.showMessageDialog(null, "Por favor selecione un habitante.");
         }
     }//GEN-LAST:event_btnEliminarActionPerformed
 

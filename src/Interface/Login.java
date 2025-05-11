@@ -124,8 +124,8 @@ public class Login extends javax.swing.JFrame {
 
         
         if (usuario.equals(txtUsuario.getText()) && pass.equals(contraseña)){
-            Inicio inicio = new Inicio();
-            inicio.setVisible(true);
+            EditarDomicilio ed = new EditarDomicilio();
+            ed.setVisible(true);
             dispose();
         }else{
             JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrecto");
