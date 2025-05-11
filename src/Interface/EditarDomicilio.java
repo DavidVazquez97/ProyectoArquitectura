@@ -11,7 +11,6 @@ import Diagrama.ListadoTipoLocalidad;
 import Diagrama.ListadoTipoMunicipio;
 import Diagrama.ListadoTipoVivienda;
 import Diagrama.Localidad;
-import Diagrama.Metodos;
 import Diagrama.Municipio;
 import Diagrama.tipoVivienda;
 import java.awt.event.ActionEvent;
@@ -33,7 +32,7 @@ public class EditarDomicilio extends javax.swing.JFrame {
     
     Conexion conectar = Conexion.getInstace();
     Connection con = conectar.conectar();
-    int idDom = 0;
+    public static int idDom = 0;
 
     /**
      * Creates new form EditarDomicilio
@@ -439,7 +438,7 @@ public class EditarDomicilio extends javax.swing.JFrame {
         if (idDom == 0){
             JOptionPane.showMessageDialog(null, "Por favor selecione un domicilio");
         }else{
-           RegistroHabitante rh = new RegistroHabitante(idDom);
+           RegistroHabitante rh = new RegistroHabitante();
            System.out.println(idDom);
            rh.setVisible(true);
         }
@@ -447,10 +446,10 @@ public class EditarDomicilio extends javax.swing.JFrame {
     }//GEN-LAST:event_btnHabitantesActionPerformed
 
     private void btnguardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnguardarActionPerformed
-        Metodos met = new Metodos();
+        /*Metodos met = new Metodos();*/
+        Domicilio domicilio = new Domicilio();
         Municipio municipio = new Municipio();
         tipoVivienda vivienda = new tipoVivienda();
-        Domicilio domicilio = new Domicilio();
         Localidad localidad = new Localidad();
         
         domicilio.setCalleNumero(txtCalle.getText());
@@ -468,8 +467,10 @@ public class EditarDomicilio extends javax.swing.JFrame {
         limpiar();
         cargarTabla();
         
-       RegistroHabitante rh = new RegistroHabitante(met.getIdDomicilio());
-       rh.setVisible(true);
+        
+        idDom = getIdDomicilio();
+        RegistroHabitante rh = new RegistroHabitante();
+        rh.setVisible(true);
     }//GEN-LAST:event_btnguardarActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
@@ -625,6 +626,29 @@ public class EditarDomicilio extends javax.swing.JFrame {
        }
         
     }
+    
+        public int getIdDomicilio () {
+        int idDomicilio = 0;
+        
+        try {
+        PreparedStatement ps;
+        ResultSet rs;
+        
+        ps = con.prepareStatement("select top 1 idVivienda from dbo.direccion order by idVivienda desc");
+        rs = ps.executeQuery();
+        
+        while (rs.next()){
+            idDomicilio = rs.getInt(1);
+        }
+        
+        }catch(SQLException ex){
+        
+            JOptionPane.showMessageDialog(null, ex);
+        }
+    
+    return idDomicilio;
+
+}
     
     
     

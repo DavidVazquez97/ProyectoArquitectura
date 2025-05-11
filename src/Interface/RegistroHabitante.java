@@ -6,7 +6,6 @@
 package Interface;
 
 import ConexionSingleton.Conexion;
-import Diagrama.Metodos;
 import Diagrama.Persona;
 import java.sql.*;
 import javax.swing.JOptionPane;
@@ -18,25 +17,20 @@ import javax.swing.table.DefaultTableModel;
  */
 public class RegistroHabitante extends javax.swing.JFrame {
     
-    Metodos met = new Metodos();
     Conexion conectar = Conexion.getInstace();
     Connection con = conectar.conectar();
     int IdHabitante = 0;
-    int idomicilio;
+    int idomicilio = EditarDomicilio.idDom;
     
-    
-    
-
     /**
      * Creates new form RegistroHabitante
      */
-    public RegistroHabitante(int idDomicilio) {
-        this.idomicilio = idDomicilio;
+    public RegistroHabitante() {
         initComponents();
         System.out.println(idomicilio);
         lblIdDomicilio.setText(idomicilio+"");
         cargarTabla();
-        lblHabitantesRegistrados.setText(met.getNumHabitantes(idomicilio)+"");
+        lblHabitantesRegistrados.setText(getNumHabitante(idomicilio)+"");
     }
 
     public void setIdomicilio(int idomicilio) {
@@ -317,7 +311,7 @@ public class RegistroHabitante extends javax.swing.JFrame {
         Persona persona = new Persona(nombre,paterno,materno,telefono,fecha,IdHabitante);
         persona.registrarHabitante(idomicilio);
         JOptionPane.showMessageDialog(null, "Habitante registrado");
-        lblHabitantesRegistrados.setText(met.getNumHabitantes(idomicilio)+"");
+        lblHabitantesRegistrados.setText(getNumHabitante(idomicilio)+"");
         limpiar();
         cargarTabla();
         
@@ -399,6 +393,31 @@ public class RegistroHabitante extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_tblHabitantesMouseClicked
 
+    public int getNumHabitante (int idVivienda){
+        
+        int habitantes = 0;
+        
+        
+        try {
+            PreparedStatement ps;
+            ResultSet rs;
+            
+            ps = con.prepareStatement("select count(*) from dbo.Habitante where idVivienda = ?");
+            ps.setInt(1, idVivienda);
+            rs = ps.executeQuery();
+            
+            while(rs.next()){
+                habitantes = rs.getInt(1);
+            }
+            
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e.toString());
+        }
+    
+    
+    return habitantes;
+    }
+    
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
         String nombre = txtNombre.getText();
         String paterno = txtPaterno.getText();
@@ -411,7 +430,7 @@ public class RegistroHabitante extends javax.swing.JFrame {
             persona.actualizarHabitante();
             limpiar();
             cargarTabla();
-            lblHabitantesRegistrados.setText(met.getNumHabitantes(idomicilio)+"");
+            lblHabitantesRegistrados.setText(getNumHabitante(idomicilio)+"");
             IdHabitante = 0;
         }else{
             JOptionPane.showMessageDialog(null, "Por favor selecione un habitante.");
@@ -427,7 +446,7 @@ public class RegistroHabitante extends javax.swing.JFrame {
             persona.eliminarHabitante();
             limpiar();
             cargarTabla();
-            lblHabitantesRegistrados.setText(met.getNumHabitantes(idomicilio)+"");
+            lblHabitantesRegistrados.setText(getNumHabitante(idomicilio)+"");
             IdHabitante = 0;
         }else{
             JOptionPane.showMessageDialog(null, "Por favor selecione un habitante.");
@@ -470,7 +489,6 @@ public class RegistroHabitante extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new RegistroHabitante(0).setVisible(true);
             }
         });
     }

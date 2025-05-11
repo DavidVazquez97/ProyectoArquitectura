@@ -7,7 +7,6 @@ package Interface;
 
 import ConexionSingleton.Conexion;
 import Diagrama.ListadoOcupaciones;
-import Diagrama.Metodos;
 import Diagrama.Ocupacion;
 import java.sql.*;
 import javax.swing.DefaultComboBoxModel;
@@ -23,8 +22,9 @@ public class Ocupaciones extends javax.swing.JFrame {
     
     Conexion conectar = Conexion.getInstace();
     Connection con = conectar.conectar();
+    int idDom = EditarDomicilio.idDom;
     
-    Metodos met = new Metodos();
+    
 
 
     /**
@@ -33,9 +33,9 @@ public class Ocupaciones extends javax.swing.JFrame {
     public Ocupaciones() {
         initComponents();
         cargarComboOcupaciones(cbOcupacion);
-        lblIdDomicilio.setText(met.getIdDomicilio()+"");
+        lblIdDomicilio.setText(idDom+"");
         cargarTabla();
-        lblOcupaciones.setText(met.getNumOcupacione(met.getIdDomicilio())+"");
+        lblOcupaciones.setText(getNumOcupaciones(idDom)+"");
     }
 
     /**
@@ -240,42 +240,24 @@ public class Ocupaciones extends javax.swing.JFrame {
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
         
-        try {
             
             Ocupacion ocu = new Ocupacion();
             ocu.setOcupacion(cbOcupacion.getSelectedItem().toString());
-            
-            PreparedStatement ps = con.prepareStatement("insert into dbo.ocupaciones (idDomicilio, IdOcupacion) values (?,?)");
-            ps.setInt(1, met.getIdDomicilio());
-            ps.setInt(2, ocu.getIdOcupacion());
-            ps.executeUpdate();
-            System.out.println("Ocupacion Registrada");
+            ocu.registrarOcupación();
             cargarTabla();
-            lblOcupaciones.setText(met.getNumOcupacione(met.getIdDomicilio())+"");
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, e.toString());
-        }
+            lblOcupaciones.setText(getNumOcupaciones(idDom)+"");
+
     }//GEN-LAST:event_btnRegistrarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        try {
-            int fila = tblOcupaciones.getSelectedRow();
-            int dom = Integer.parseInt(tblOcupaciones.getValueAt(fila, 0).toString());
-            int ocu = Integer.parseInt(tblOcupaciones.getValueAt(fila, 1).toString());
-            
-            PreparedStatement ps = con.prepareStatement("delete from Ocupaciones where idDomicilio = ? and idOcupacion = ?");
-            ps.setInt(1, dom);
-            ps.setInt(2, ocu);
-            ps.executeUpdate();
-            JOptionPane.showMessageDialog(null, "ocupacion Eliminada");
-            cargarTabla();
-            lblOcupaciones.setText(met.getNumOcupacione(met.getIdDomicilio())+"");
-            
-            
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, e.toString());
-        }
-            
+        
+        int fila = tblOcupaciones.getSelectedRow();
+        int ocu = Integer.parseInt(tblOcupaciones.getValueAt(fila, 1).toString());
+        Ocupacion ocupacion = new Ocupacion ();
+        ocupacion.eliminarOcupacion(ocu);
+        cargarTabla();
+        lblOcupaciones.setText(getNumOcupaciones(idDom)+"");
+                 
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     /**
@@ -351,7 +333,7 @@ public class Ocupaciones extends javax.swing.JFrame {
                         "Inner join Ocupacion on Ocupaciones.idOcupacion = Ocupacion.idOcupacion "+
                         "where Ocupaciones.idDomicilio = ?";
                 ps = con.prepareStatement(consulta);
-                ps.setInt(1, met.getIdDomicilio());
+                ps.setInt(1, idDom);
                 rs = ps.executeQuery();
                 rsmd = rs.getMetaData();
                 columnas = rsmd.getColumnCount();
@@ -369,6 +351,29 @@ public class Ocupaciones extends javax.swing.JFrame {
             }
             
         }
+        
+        public int getNumOcupaciones (int domicilio){
+        int ocupaciones = 0;
+            
+        
+        try {
+            PreparedStatement ps;
+            ResultSet rs;
+            
+            ps = con.prepareStatement("select count(*) from dbo.Ocupaciones where idDomicilio = ?");
+            ps.setInt(1, domicilio);
+            rs = ps.executeQuery();
+            
+            while(rs.next()){
+                ocupaciones = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e.toString());
+        }
+        
+    
+        return ocupaciones;
+    }
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
